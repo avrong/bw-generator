@@ -1,0 +1,15 @@
+[package]
+name = "bw-generator"
+version = "1.0.0"
+authors = ["Alexey Trifonov <avrong@outlook.com>"]
+edition = "2018"
+
+[dependencies]
+http = "0.1.15"
+hyper = "0.12.23"
+serde = "1.0.85"
+serde_derive = "1.0.85"
+serde_json = "1.0.37"
+toml = "0.4.10"
+rand = "0.6.5"
+clap = "2.32.0"
