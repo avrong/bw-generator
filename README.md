@@ -2,16 +2,14 @@
 
 A buzzword statements generator server in Rust.
 
-```
-{"phrase": "Quickly whiteboard inexpensive innovation"}
-```
-
 Inspired by [sameerkumar18/corporate-bs-generator-api](https://github.com/sameerkumar18/corporate-bs-generator-api).
 
-## Endpoints
+## Try It!
 
-#### ```GET /```
-```Returns a random generated buzzword statement.```
+#### ```GET https://bw-generator.herokuapp.com/```
+```json
+{"phrase": "Quickly whiteboard inexpensive innovation"}
+```
 
 ## Usage
 
@@ -27,3 +25,6 @@ OPTIONS:
     -h, --host <TEXT>       The interface to bind to (default: 127.0.0.1)
     -p, --port <INTEGER>    The port to bind to (default: 3000)
 ```
+
+#### ```GET /```
+```Returns a random generated buzzword statement.```
