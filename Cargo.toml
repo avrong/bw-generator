@@ -1,17 +1,15 @@
 [package]
 name = "bw-generator"
 version = "1.0.0"
-authors = ["Alexey Trifonov <avrong@outlook.com>"]
+authors = ["Aleksei Trifonov <avrong@avrong.me>"]
 edition = "2018"
 
 [dependencies]
-http = "0.1.15"
-hyper = "0.12.23"
-serde = "1.0.85"
-serde_derive = "1.0.85"
-serde_json = "1.0.37"
-toml = "0.4.10"
-rand = "0.6.5"
-clap = "2.32.0"
+serde = "1.0.106"
+serde_derive = "1.0.106"
+serde_json = "1.0.51"
+toml = "0.5.6"
+rand = "0.7.3"
+clap = "2.33.0"
 gotham = "0.4.0"
 gotham_derive = "0.4.0"
