@@ -37,7 +37,7 @@ impl Settings {
         }
     }
 
-    pub fn get_address(&self) -> String {
+    pub fn address(&self) -> String {
         format!("{}:{}", self.host, self.port)
     }
 }

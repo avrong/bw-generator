@@ -38,6 +38,6 @@ fn router(settings: &Settings) -> Router {
 fn main() {
     let settings = Settings::parse();
 
-    let address = settings.get_address();
+    let address = settings.address();
     gotham::start(address, router(&settings));
 }

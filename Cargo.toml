@@ -1,5 +1,5 @@
 [package]
-name = "bw-generator"
+name = "bw_generator"
 version = "1.0.0"
 authors = ["Aleksei Trifonov <avrong@avrong.me>"]
 edition = "2018"
