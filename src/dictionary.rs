@@ -1,41 +1,20 @@
-use std::sync::{Arc, Mutex};
-use std::io::prelude::*;
 use std::fs::File;
+use std::io::prelude::*;
+
 use rand::prelude::*;
-use serde_derive::{Serialize, Deserialize};
-
-fn capitalize(s: &str) -> String {
-    let mut c = s.chars();
-    match c.next() {
-        None => String::new(),
-        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
-    }
-}
-
-#[derive(Clone, StateData)]
-pub struct DictionaryState {
-    pub dictionary: Arc<Mutex<Dictionary>>
-}
-
-impl DictionaryState {
-    pub fn new(dictionary: Dictionary) -> DictionaryState {
-        DictionaryState {
-            dictionary: Arc::new(Mutex::new(dictionary))
-        }
-    }
-}
+use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub struct Dictionary {
     adverbs: Vec<String>,
     verbs: Vec<String>,
     adjectives: Vec<String>,
-    nouns: Vec<String>
+    nouns: Vec<String>,
 }
 
 impl Dictionary {
     pub fn from_toml(data: &str) -> Dictionary {
-        toml::from_str(data).expect("Cannot parse toml")
+        toml::from_str(data).expect("Cannot parse dictionary TOML")
     }
 
     pub fn from_file(filename: &str) -> Dictionary {
@@ -58,13 +37,10 @@ impl Dictionary {
     }
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct Phrase {
-    phrase: String
-}
-
-impl Phrase {
-    pub fn new(phrase: &str) -> Phrase {
-        Phrase { phrase: phrase.to_owned() }
+fn capitalize(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        None => String::new(),
+        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
     }
 }

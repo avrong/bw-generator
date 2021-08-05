@@ -1,43 +1,36 @@
-mod dictionary;
-mod settings;
+use std::net::SocketAddr;
+use std::str::FromStr;
+use std::sync::Mutex;
 
-#[macro_use]
-extern crate gotham_derive;
+use axum::prelude::*;
+use axum::response::Json;
+use clap::Clap;
+use lazy_static::lazy_static;
 
-use gotham::state::{State, FromState};
-use gotham::router::builder::*;
-use gotham::router::Router;
-use gotham::middleware::state::StateMiddleware;
-use gotham::pipeline::single_middleware;
-use gotham::pipeline::single::single_pipeline;
-use crate::dictionary::{Dictionary, Phrase, DictionaryState};
-use crate::settings::Settings;
+use bw_generator::dictionary::Dictionary;
+use bw_generator::phrase::Phrase;
+use bw_generator::settings::Settings;
 
-fn statement_handler(state: State) -> (State, String) {
-    let dictionary_state = DictionaryState::borrow_from(&state);
-    let statement = dictionary_state.dictionary.lock().unwrap().make_statement();
-
-    let phrase = Phrase::new(&statement);
-    let serialized = serde_json::to_string(&phrase).unwrap();
-
-    (state, serialized)
+lazy_static! {
+    static ref DICTIONARY: Mutex<Option<Dictionary>> = Mutex::new(None);
 }
 
-fn router(settings: &Settings) -> Router {
-    let dictionary = Dictionary::from_file(&settings.dictionary_name);
-    let dictionary_state = DictionaryState::new(dictionary);
-    let middleware = StateMiddleware::new(dictionary_state);
-    let pipeline = single_middleware(middleware);
-    let (chain, pipelines) = single_pipeline(pipeline);
-
-    build_router(chain, pipelines, |route| {
-        route.get("/").to(statement_handler)
-    })
-}
-
-fn main() {
+#[tokio::main]
+async fn main() {
     let settings = Settings::parse();
+    let address = SocketAddr::from_str(&settings.address())
+        .expect("Invalid address or port to serve on");
+    let app = route("/", get(root));
+    *DICTIONARY.lock().unwrap() = Some(Dictionary::from_file(&settings.dictionary));
 
-    let address = settings.address();
-    gotham::start(address, router(&settings));
+    hyper::Server::bind(&address)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+
+async fn root() -> Json<Phrase> {
+    let statement = DICTIONARY.lock().unwrap().as_ref().unwrap().make_statement();
+    let phrase = Phrase::new(&statement);
+    Json(phrase)
 }
